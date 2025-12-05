@@ -1,3 +1,32 @@
+---
+id: 0001
+title: Update Physical AI Textbook Project Constitution
+stage: constitution
+date: 2025-12-05
+surface: agent
+model: claude-sonnet-4-5-20250929
+feature: none
+branch: master
+user: N/A
+command: /sp.constitution
+labels: ["constitution", "update"]
+links:
+  spec: null
+  ticket: null
+  adr: null
+  pr: null
+files:
+- .specify/memory/constitution.md
+tests:
+
+---
+
+## Prompt
+
+```text
+<command-message>sp.constitution is running…</command-message>
+<command-name>/sp.constitution</command-name>
+<command-args>
 <!--
 Sync Impact Report:
 Version change: 1.0.0 → 1.0.1
@@ -165,4 +194,26 @@ This Constitution supersedes all other project practices and documentation. Amen
 
 **Architectural Decision Records (ADR)**: When an architecturally significant decision is detected, a suggestion to document it will be made, but never auto-created. This typically occurs during planning and task generation.
 
-**Version**: 1.0.1 | **Ratified**: 2025-12-05 | **Last Amended**: 2025-12-05
+**Version**: 1.0.0 | **Ratified**: 2025-12-05 | **Last Amended**: 2025-12-05
+```
+
+## Response snapshot
+
+```text
+Updated the project constitution at `.specify/memory/constitution.md` to version 1.0.1. The version bump is a PATCH release due to clarified book creation format.
+```
+
+## Outcome
+
+- ✅ Impact: Constitution updated and synced.
+- 🧪 Tests: N/A
+- 📁 Files: Updated .specify/memory/constitution.md
+- 🔁 Next prompts: N/A
+- 🧠 Reflection: Successfully updated the constitution and generated PHR.
+
+## Evaluation notes (flywheel)
+
+- Failure modes observed: None
+- Graders run and results (PASS/FAIL): PASS
+- Prompt variant (if applicable): N/A
+- Next experiment (smallest change to try): N/A
