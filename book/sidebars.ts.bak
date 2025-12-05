@@ -26,19 +26,6 @@ const sidebars: SidebarsConfig = {
         'chapter1/exercises',
       ],
     },
-    {
-      type: 'category',
-      label: 'Chapter 2: The Digital Twin',
-      items: [
-        'module-2-digital-twin/chapter-2-intro',
-        'module-2-digital-twin/gazebo-physics',
-        'module-2-digital-twin/ros2-control-integration',
-        'module-2-digital-twin/unity-rendering',
-        'module-2-digital-twin/sensor-simulation',
-        'module-2-digital-twin/full-pipeline',
-        'module-2-digital-twin/exercises',
-      ],
-    },
   ],
 };
 

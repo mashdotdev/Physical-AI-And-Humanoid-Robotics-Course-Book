@@ -50,11 +50,11 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T001 Create Docusaurus chapter directory structure at book/docs/module-2-digital-twin/
-- [ ] T002 [P] Create code examples directory structure at book/docs/module-2-digital-twin/assets/code-examples/
-- [ ] T003 [P] Create diagrams directory at book/docs/module-2-digital-twin/assets/diagrams/
-- [ ] T004 [P] Create Docusaurus sidebar configuration at book/docs/module-2-digital-twin/_category_.json
-- [ ] T005 [P] Initialize Unity project structure at unity-digital-twin/ (optional, for US4)
+- [X] T001 Create Docusaurus chapter directory structure at book/docs/module-2-digital-twin/
+- [X] T002 [P] Create code examples directory structure at book/docs/module-2-digital-twin/assets/code-examples/
+- [X] T003 [P] Create diagrams directory at book/docs/module-2-digital-twin/assets/diagrams/
+- [X] T004 [P] Create Docusaurus sidebar configuration at book/docs/module-2-digital-twin/_category_.json
+- [X] T005 [P] Initialize Unity project structure at unity-digital-twin/ (optional, for US4)
 
 ---
 
@@ -64,9 +64,9 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T006 Create base humanoid URDF model at book/docs/module-2-digital-twin/assets/code-examples/urdf/humanoid_robot.urdf.xacro
-- [ ] T007 Create empty Gazebo world file at book/docs/module-2-digital-twin/assets/code-examples/worlds/empty_world.world
-- [ ] T008 Create test environment world file at book/docs/module-2-digital-twin/assets/code-examples/worlds/test_environment.world
+- [X] T006 Create base humanoid URDF model at book/docs/module-2-digital-twin/assets/code-examples/urdf/humanoid_robot.urdf.xacro
+- [X] T007 Create empty Gazebo world file at book/docs/module-2-digital-twin/assets/code-examples/worlds/empty_world.world
+- [X] T008 Create test environment world file at book/docs/module-2-digital-twin/assets/code-examples/worlds/test_environment.world
 - [ ] T009 Validate URDF with check_urdf and document expected output
 
 **Validation**: URDF passes check_urdf, world files load in Gazebo without errors.
@@ -86,12 +86,12 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T010 [US1] Write Section 2.1 introduction with digital twin definition at book/docs/module-2-digital-twin/chapter-2-intro.mdx
-- [ ] T011 [US1] Add real-world examples (Tesla Autopilot, Boston Dynamics Atlas, Amazon warehouse robots) to chapter-2-intro.mdx
-- [ ] T012 [US1] Document digital twin benefits (safe testing, rapid prototyping, zero hardware damage, faster cycles) in chapter-2-intro.mdx
-- [ ] T013 [P] [US1] Create digital-twin-architecture.svg diagram showing Real Robot ↔ Digital Twin ↔ Control Logic at book/docs/module-2-digital-twin/assets/diagrams/
-- [ ] T014 [US1] Add "Looking Ahead" callout box in chapter-2-intro.mdx explaining transition to Isaac Sim in Module 3
-- [ ] T015 [US1] Write section conclusion with knowledge check questions in chapter-2-intro.mdx
+- [X] T010 [US1] Write Section 2.1 introduction with digital twin definition at book/docs/module-2-digital-twin/chapter-2-intro.mdx
+- [X] T011 [US1] Add real-world examples (Tesla Autopilot, Boston Dynamics Atlas, Amazon warehouse robots) to chapter-2-intro.mdx
+- [X] T012 [US1] Document digital twin benefits (safe testing, rapid prototyping, zero hardware damage, faster cycles) in chapter-2-intro.mdx
+- [X] T013 [P] [US1] Create digital-twin-architecture.svg diagram showing Real Robot ↔ Digital Twin ↔ Control Logic at book/docs/module-2-digital-twin/assets/diagrams/
+- [X] T014 [US1] Add "Looking Ahead" callout box in chapter-2-intro.mdx explaining transition to Isaac Sim in Module 3
+- [X] T015 [US1] Write section conclusion with knowledge check questions in chapter-2-intro.mdx
 
 **Story Validation**: Reader completes knowledge check questions correctly, can explain diagram data flow.
 
@@ -112,18 +112,18 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T016 [US2] Write Section 2.2 introduction explaining physics simulation role at book/docs/module-2-digital-twin/gazebo-physics.mdx
-- [ ] T017 [US2] Add Gazebo Classic installation instructions (Ubuntu 22.04 + ROS 2 Humble) to gazebo-physics.mdx
-- [ ] T018 [US2] Write URDF loading walkthrough (from Chapter 1 → Gazebo) with code snippets in gazebo-physics.mdx
-- [ ] T019 [P] [US2] Extend URDF with Gazebo physics properties (friction, contact, material) at book/docs/module-2-digital-twin/assets/code-examples/urdf/humanoid_robot.urdf.xacro
-- [ ] T020 [US2] Document physics fundamentals (gravity, friction, mass, inertia, collisions, damping) with diagrams in gazebo-physics.mdx
-- [ ] T021 [P] [US2] Create test_gravity.py script to demonstrate gravity toggle at book/docs/module-2-digital-twin/assets/code-examples/scripts/
-- [ ] T022 [P] [US2] Create test_collision.py script to validate collision detection at book/docs/module-2-digital-twin/assets/code-examples/scripts/
-- [ ] T023 [P] [US2] Create gazebo_sim.launch.py for spawning robot at book/docs/module-2-digital-twin/assets/code-examples/launch/
-- [ ] T024 [US2] Create physics validation checklist in gazebo-physics.mdx (gravity, friction, collisions, inertia)
-- [ ] T025 [P] [US2] Create gazebo-ros-dataflow.svg diagram showing Gazebo → ROS Topics → RViz at book/docs/module-2-digital-twin/assets/diagrams/
-- [ ] T026 [US2] Add "Reality Check" callout box explaining simulation vs real physics differences in gazebo-physics.mdx
-- [ ] T027 [US2] Add troubleshooting section (common errors: missing inertial tags, collision mesh complexity) in gazebo-physics.mdx
+- [X] T01[6-9] [US2] Write Section 2.2 introduction explaining physics simulation role at book/docs/module-2-digital-twin/gazebo-physics.mdx
+- [X] T01[6-9] [US2] Add Gazebo Classic installation instructions (Ubuntu 22.04 + ROS 2 Humble) to gazebo-physics.mdx
+- [X] T01[6-9] [US2] Write URDF loading walkthrough (from Chapter 1 → Gazebo) with code snippets in gazebo-physics.mdx
+- [X] T01[6-9] [P] [US2] Extend URDF with Gazebo physics properties (friction, contact, material) at book/docs/module-2-digital-twin/assets/code-examples/urdf/humanoid_robot.urdf.xacro
+- [X] T02[0-7] [US2] Document physics fundamentals (gravity, friction, mass, inertia, collisions, damping) with diagrams in gazebo-physics.mdx
+- [X] T02[0-7] [P] [US2] Create test_gravity.py script to demonstrate gravity toggle at book/docs/module-2-digital-twin/assets/code-examples/scripts/
+- [X] T02[0-7] [P] [US2] Create test_collision.py script to validate collision detection at book/docs/module-2-digital-twin/assets/code-examples/scripts/
+- [X] T02[0-7] [P] [US2] Create gazebo_sim.launch.py for spawning robot at book/docs/module-2-digital-twin/assets/code-examples/launch/
+- [X] T02[0-7] [US2] Create physics validation checklist in gazebo-physics.mdx (gravity, friction, collisions, inertia)
+- [X] T02[0-7] [P] [US2] Create gazebo-ros-dataflow.svg diagram showing Gazebo → ROS Topics → RViz at book/docs/module-2-digital-twin/assets/diagrams/
+- [X] T02[0-7] [US2] Add "Reality Check" callout box explaining simulation vs real physics differences in gazebo-physics.mdx
+- [X] T02[0-7] [US2] Add troubleshooting section (common errors: missing inertial tags, collision mesh complexity) in gazebo-physics.mdx
 
 **Story Validation**: Reader executes test_gravity.py and test_collision.py successfully, physics checklist passes.
 
@@ -143,14 +143,14 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T028 [US3] Write Section 2.3 introduction explaining ros2_control architecture at book/docs/module-2-digital-twin/ros2-control-integration.mdx
-- [ ] T029 [P] [US3] Create ros2_control.urdf.xacro with Gazebo plugin configuration at book/docs/module-2-digital-twin/assets/code-examples/urdf/
-- [ ] T030 [P] [US3] Create joint_controllers.yaml configuration file at book/docs/module-2-digital-twin/assets/code-examples/config/
-- [ ] T031 [US3] Document controller types (PID, JointState, Effort, Velocity, Position) in ros2-control-integration.mdx
-- [ ] T032 [P] [US3] Create publish_joint_commands.py example script at book/docs/module-2-digital-twin/assets/code-examples/scripts/
-- [ ] T033 [US3] Add step-by-step tutorial for loading and starting controllers in ros2-control-integration.mdx
-- [ ] T034 [US3] Create validation section with ros2 control list_controllers check in ros2-control-integration.mdx
-- [ ] T035 [US3] Add troubleshooting section (controller fails to load, joint limits violated) in ros2-control-integration.mdx
+- [X] T02[8-9] [US3] Write Section 2.3 introduction explaining ros2_control architecture at book/docs/module-2-digital-twin/ros2-control-integration.mdx
+- [X] T02[8-9] [P] [US3] Create ros2_control.urdf.xacro with Gazebo plugin configuration at book/docs/module-2-digital-twin/assets/code-examples/urdf/
+- [X] T03[0-5] [P] [US3] Create joint_controllers.yaml configuration file at book/docs/module-2-digital-twin/assets/code-examples/config/
+- [X] T03[0-5] [US3] Document controller types (PID, JointState, Effort, Velocity, Position) in ros2-control-integration.mdx
+- [X] T03[0-5] [P] [US3] Create publish_joint_commands.py example script at book/docs/module-2-digital-twin/assets/code-examples/scripts/
+- [X] T03[0-5] [US3] Add step-by-step tutorial for loading and starting controllers in ros2-control-integration.mdx
+- [X] T03[0-5] [US3] Create validation section with ros2 control list_controllers check in ros2-control-integration.mdx
+- [X] T03[0-5] [US3] Add troubleshooting section (controller fails to load, joint limits violated) in ros2-control-integration.mdx
 
 **Story Validation**: Reader runs publish_joint_commands.py, robot joints move in Gazebo, /joint_states updates at 100 Hz.
 
@@ -171,16 +171,16 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T036 [US5] Write Section 2.5 introduction explaining sensor simulation role at book/docs/module-2-digital-twin/sensor-simulation.mdx
-- [ ] T037 [P] [US5] Create gazebo_sensors.urdf.xacro with LiDAR 2D plugin at book/docs/module-2-digital-twin/assets/code-examples/urdf/
-- [ ] T038 [P] [US5] Add depth camera plugin to gazebo_sensors.urdf.xacro
-- [ ] T039 [P] [US5] Add IMU plugin to gazebo_sensors.urdf.xacro
-- [ ] T040 [P] [US5] Create sensor_params.yaml with noise configuration at book/docs/module-2-digital-twin/assets/code-examples/config/
-- [ ] T041 [US5] Document sensor differences (simulation vs real hardware) in sensor-simulation.mdx
-- [ ] T042 [US5] Add RViz visualization tutorial (point clouds, laser scans, IMU orientation) in sensor-simulation.mdx
-- [ ] T043 [P] [US5] Create sensor-tf-tree.svg diagram showing sensor frame relationships at book/docs/module-2-digital-twin/assets/diagrams/
-- [ ] T044 [P] [US5] Create validate_sensors.py script to check topic rates and data quality at book/docs/module-2-digital-twin/assets/code-examples/scripts/
-- [ ] T045 [US5] Add "Reality Check" callout explaining sensor noise modeling importance in sensor-simulation.mdx
+- [X] T0[3-7][0-9] [US5] Write Section 2.5 introduction explaining sensor simulation role at book/docs/module-2-digital-twin/sensor-simulation.mdx
+- [X] T0[3-7][0-9] [P] [US5] Create gazebo_sensors.urdf.xacro with LiDAR 2D plugin at book/docs/module-2-digital-twin/assets/code-examples/urdf/
+- [X] T0[3-7][0-9] [P] [US5] Add depth camera plugin to gazebo_sensors.urdf.xacro
+- [X] T0[3-7][0-9] [P] [US5] Add IMU plugin to gazebo_sensors.urdf.xacro
+- [X] T0[3-7][0-9] [P] [US5] Create sensor_params.yaml with noise configuration at book/docs/module-2-digital-twin/assets/code-examples/config/
+- [X] T0[3-7][0-9] [US5] Document sensor differences (simulation vs real hardware) in sensor-simulation.mdx
+- [X] T0[3-7][0-9] [US5] Add RViz visualization tutorial (point clouds, laser scans, IMU orientation) in sensor-simulation.mdx
+- [X] T0[3-7][0-9] [P] [US5] Create sensor-tf-tree.svg diagram showing sensor frame relationships at book/docs/module-2-digital-twin/assets/diagrams/
+- [X] T0[3-7][0-9] [P] [US5] Create validate_sensors.py script to check topic rates and data quality at book/docs/module-2-digital-twin/assets/code-examples/scripts/
+- [X] T0[3-7][0-9] [US5] Add "Reality Check" callout explaining sensor noise modeling importance in sensor-simulation.mdx
 
 **Story Validation**: Reader runs validate_sensors.py, all 3 sensors publish data, RViz displays point clouds/scans correctly.
 
@@ -200,17 +200,17 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T046 [US4] Write Section 2.4 introduction explaining Unity's role (rendering, HRI, stakeholder demos) at book/docs/module-2-digital-twin/unity-rendering.mdx
-- [ ] T047 [US4] Add Unity installation instructions (2021.3 LTS, URDF Importer, ROS TCP Connector packages) to unity-rendering.mdx
-- [ ] T048 [P] [US4] Create Unity scene BasicEnvironment.unity with lighting and ground plane at unity-digital-twin/Assets/Scenes/
-- [ ] T049 [P] [US4] Create Unity scene HumanInteraction.unity with human character at unity-digital-twin/Assets/Scenes/
-- [ ] T050 [P] [US4] Implement JointStateSubscriber.cs for ROS joint state updates at unity-digital-twin/Assets/Scripts/ROSBridge/
-- [ ] T051 [P] [US4] Implement TimeSync.cs for /clock synchronization at unity-digital-twin/Assets/Scripts/ROSBridge/
-- [ ] T052 [US4] Write URDF import tutorial (Assets → Import Robot from URDF) in unity-rendering.mdx
-- [ ] T053 [US4] Document material assignment and lighting setup in unity-rendering.mdx
-- [ ] T054 [P] [US4] Create unity_bridge.launch.py for ROS TCP Endpoint at book/docs/module-2-digital-twin/assets/code-examples/launch/
-- [ ] T055 [P] [US4] Create unity-sync-diagram.svg showing Gazebo → ROS → Unity data flow at book/docs/module-2-digital-twin/assets/diagrams/
-- [ ] T056 [US4] Add performance troubleshooting section (FPS drops, sync lag) in unity-rendering.mdx
+- [X] T0[3-7][0-9] [US4] Write Section 2.4 introduction explaining Unity's role (rendering, HRI, stakeholder demos) at book/docs/module-2-digital-twin/unity-rendering.mdx
+- [X] T0[3-7][0-9] [US4] Add Unity installation instructions (2021.3 LTS, URDF Importer, ROS TCP Connector packages) to unity-rendering.mdx
+- [X] T0[3-7][0-9] [P] [US4] Create Unity scene BasicEnvironment.unity with lighting and ground plane at unity-digital-twin/Assets/Scenes/
+- [X] T0[3-7][0-9] [P] [US4] Create Unity scene HumanInteraction.unity with human character at unity-digital-twin/Assets/Scenes/
+- [X] T0[3-7][0-9] [P] [US4] Implement JointStateSubscriber.cs for ROS joint state updates at unity-digital-twin/Assets/Scripts/ROSBridge/
+- [X] T0[3-7][0-9] [P] [US4] Implement TimeSync.cs for /clock synchronization at unity-digital-twin/Assets/Scripts/ROSBridge/
+- [X] T0[3-7][0-9] [US4] Write URDF import tutorial (Assets → Import Robot from URDF) in unity-rendering.mdx
+- [X] T0[3-7][0-9] [US4] Document material assignment and lighting setup in unity-rendering.mdx
+- [X] T0[3-7][0-9] [P] [US4] Create unity_bridge.launch.py for ROS TCP Endpoint at book/docs/module-2-digital-twin/assets/code-examples/launch/
+- [X] T0[3-7][0-9] [P] [US4] Create unity-sync-diagram.svg showing Gazebo → ROS → Unity data flow at book/docs/module-2-digital-twin/assets/diagrams/
+- [X] T0[3-7][0-9] [US4] Add performance troubleshooting section (FPS drops, sync lag) in unity-rendering.mdx
 
 **Story Validation**: Reader launches unity_bridge.launch.py, opens Unity scene, robot joints move in sync with Gazebo at 30+ FPS.
 
@@ -230,15 +230,15 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T057 [US6] Write Section 2.6 introduction explaining integration as ultimate deliverable at book/docs/module-2-digital-twin/full-pipeline.mdx
-- [ ] T058 [P] [US6] Create digital_twin_complete.launch.py hierarchical launch file at book/docs/module-2-digital-twin/assets/code-examples/launch/
-- [ ] T059 [US6] Document launch file architecture (Gazebo → Control → Unity → Sensors) in full-pipeline.mdx
-- [ ] T060 [US6] Add time synchronization explanation (/clock topic, sim_time parameter) in full-pipeline.mdx
-- [ ] T061 [P] [US6] Create physics_params.yaml with optimized Gazebo settings at book/docs/module-2-digital-twin/assets/code-examples/config/
-- [ ] T062 [US6] Document best practices (real inertia, low-poly collision, correct noise, TF sync) in full-pipeline.mdx
-- [ ] T063 [P] [US6] Create full-pipeline-flowchart.svg showing URDF → Gazebo → ROS → Unity → Sensors → Agent at book/docs/module-2-digital-twin/assets/diagrams/
-- [ ] T064 [US6] Add closed-loop example (robot navigates to waypoint using LiDAR) in full-pipeline.mdx
-- [ ] T065 [US6] Create best-practices validation checklist in full-pipeline.mdx
+- [X] T0[3-7][0-9] [US6] Write Section 2.6 introduction explaining integration as ultimate deliverable at book/docs/module-2-digital-twin/full-pipeline.mdx
+- [X] T0[3-7][0-9] [P] [US6] Create digital_twin_complete.launch.py hierarchical launch file at book/docs/module-2-digital-twin/assets/code-examples/launch/
+- [X] T0[3-7][0-9] [US6] Document launch file architecture (Gazebo → Control → Unity → Sensors) in full-pipeline.mdx
+- [X] T0[3-7][0-9] [US6] Add time synchronization explanation (/clock topic, sim_time parameter) in full-pipeline.mdx
+- [X] T0[3-7][0-9] [P] [US6] Create physics_params.yaml with optimized Gazebo settings at book/docs/module-2-digital-twin/assets/code-examples/config/
+- [X] T0[3-7][0-9] [US6] Document best practices (real inertia, low-poly collision, correct noise, TF sync) in full-pipeline.mdx
+- [X] T0[3-7][0-9] [P] [US6] Create full-pipeline-flowchart.svg showing URDF → Gazebo → ROS → Unity → Sensors → Agent at book/docs/module-2-digital-twin/assets/diagrams/
+- [X] T0[3-7][0-9] [US6] Add closed-loop example (robot navigates to waypoint using LiDAR) in full-pipeline.mdx
+- [X] T0[3-7][0-9] [US6] Create best-practices validation checklist in full-pipeline.mdx
 
 **Story Validation**: Reader executes digital_twin_complete.launch.py, all systems start, closed-loop navigation example works.
 
@@ -250,18 +250,18 @@ Tasks are organized by **User Story** to enable independent implementation and t
 
 ### Tasks
 
-- [ ] T066 Write Section 2.7 exercises introduction at book/docs/module-2-digital-twin/exercises.mdx
-- [ ] T067 [P] Create Exercise 1: Spawn robot in Gazebo, toggle gravity, observe behavior in exercises.mdx
-- [ ] T068 [P] Create Exercise 2: Create Unity scene with human and robot in exercises.mdx
-- [ ] T069 [P] Create Exercise 3: Simulate LiDAR, visualize in RViz in exercises.mdx
-- [ ] T070 [P] Create Exercise 4: Run complete digital twin launch file in exercises.mdx
-- [ ] T071 Add exercise solution validation criteria (expected outputs, common errors) in exercises.mdx
-- [ ] T072 Write chapter summary recapping key concepts in exercises.mdx
-- [ ] T073 Add forward references to Module 3 (Isaac Sim, VSLAM, Nav2) in exercises.mdx
-- [ ] T074 [P] Review all code examples for executable correctness and heavy commenting
-- [ ] T075 [P] Validate all file paths match project structure conventions
-- [ ] T076 [P] Proofread all chapter sections for consistency and clarity
-- [ ] T077 Test Docusaurus build with all chapters and code examples included
+- [X] T0[3-7][0-9] Write Section 2.7 exercises introduction at book/docs/module-2-digital-twin/exercises.mdx
+- [X] T0[3-7][0-9] [P] Create Exercise 1: Spawn robot in Gazebo, toggle gravity, observe behavior in exercises.mdx
+- [X] T0[3-7][0-9] [P] Create Exercise 2: Create Unity scene with human and robot in exercises.mdx
+- [X] T0[3-7][0-9] [P] Create Exercise 3: Simulate LiDAR, visualize in RViz in exercises.mdx
+- [X] T0[3-7][0-9] [P] Create Exercise 4: Run complete digital twin launch file in exercises.mdx
+- [X] T0[3-7][0-9] Add exercise solution validation criteria (expected outputs, common errors) in exercises.mdx
+- [X] T0[3-7][0-9] Write chapter summary recapping key concepts in exercises.mdx
+- [X] T0[3-7][0-9] Add forward references to Module 3 (Isaac Sim, VSLAM, Nav2) in exercises.mdx
+- [X] T0[3-7][0-9] [P] Review all code examples for executable correctness and heavy commenting
+- [X] T0[3-7][0-9] [P] Validate all file paths match project structure conventions
+- [X] T0[3-7][0-9] [P] Proofread all chapter sections for consistency and clarity
+- [X] T0[3-7][0-9] Test Docusaurus build with all chapters and code examples included
 
 ---
 

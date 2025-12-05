@@ -34,35 +34,41 @@ This course is designed for:
 
 ## Course Structure
 
-### Module 1: Foundations
-**Chapter 1: The Robotic Nervous System (ROS 2)**
+### Module 1: The Robotic Nervous System
+**Chapter 1: ROS 2 Fundamentals (Weeks 1-5)**
 - Understanding robot middleware and communication paradigms
 - Building ROS 2 nodes, topics, services, and actions
 - Interfacing high-level AI with low-level controllers
 - Visualizing robot structures with URDF
+- **Key Deliverable**: A simulated robot arm that responds to basic vector commands
 
-### Module 2: Perception (Coming Soon)
-Vision systems, sensor fusion, and environment understanding
+### Module 2: The Digital Twin
+**Chapter 2: Physics Simulation and Virtual Environments (Weeks 6-7)**
+- Physics simulation in Gazebo (gravity, friction, collisions)
+- High-fidelity rendering in Unity for stakeholder demos and HRI testing
+- ROS 2 control integration (hardware-agnostic controllers)
+- Sensor simulation (LiDAR, depth cameras, IMU) with realistic noise models
+- Complete digital twin pipeline orchestration
+- **Key Deliverable**: A robot falling, balancing, and seeing its environment in a virtual world
 
-### Module 3: Motion and Control (Coming Soon)
-Kinematics, dynamics, trajectory planning, and control theory
+### Module 3: The AI-Robot Brain (Coming Soon)
+**Scope**: NVIDIA Isaac Sim & Isaac ROS, VSLAM, Nav2 (Weeks 8-10)
+- Visual Simultaneous Localization and Mapping (VSLAM)
+- Nav2 for autonomous path planning and navigation
+- GPU-accelerated perception with Isaac ROS
+- **Key Deliverable**: A robot that maps a room and navigates it autonomously
 
-### Module 4: Navigation (Coming Soon)
-Mapping, localization, path planning, and autonomous navigation
+### Module 4: Vision-Language-Action Models (Coming Soon)
+**Scope**: VLA Models, Whisper, LLM Integration (Weeks 11-13)
+- OpenAI Whisper for voice command processing
+- Large Language Models (LLMs) generating ROS 2 action plans
+- Vision-Language-Action model integration
+- **Key Deliverable**: Capstone Project - The Autonomous Humanoid (hears command, plans task, executes it)
 
-### Module 5: Manipulation (Coming Soon)
-Grasping, object manipulation, and dexterous control
+## Philosophy: Simulation First, Reality Second
 
-### Module 6: Vision-Language-Action Models (Coming Soon)
-Integrating LLMs and VLAs with robot systems
-
-### Module 7: Deployment and Safety (Coming Soon)
-Edge compute, real-time constraints, and safety-critical systems
-
-## Philosophy: Reality First, Simulation Second
-
-This course adheres to a **"Simulation First, Reality Second"** approach:
-1. **Develop in simulation** (NVIDIA Isaac Sim) for rapid iteration and safety
+This course adheres to the **"Digital Twin"** philosophy:
+1. **Develop in simulation** (Gazebo, Unity, NVIDIA Isaac Sim) for rapid iteration and safety
 2. **Validate hardware alignment** (NVIDIA RTX GPUs, Jetson Orin)
 3. **Deploy to physical systems** with minimal sim-to-real gap
 
@@ -76,7 +82,7 @@ Ready to begin? Proceed to **Chapter 1: The Robotic Nervous System (ROS 2)** to 
 
 Before starting, ensure you have:
 - **ROS 2 Humble or Iron** installed on Ubuntu 22.04 LTS
-- **NVIDIA Isaac Sim** (Omniverse) or Gazebo for simulation
+- **Gazebo Classic or NVIDIA Isaac Sim** for simulation
 - **Python 3.10+** with `rclpy`, NumPy, and PyTorch
 
-Detailed setup instructions are provided in each chapter's quickstart guide.
+Detailed setup instructions are provided in each chapter's content.

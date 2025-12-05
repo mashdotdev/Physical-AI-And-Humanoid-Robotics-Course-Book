@@ -1,0 +1,635 @@
+<?xml version="1.0"?>
+<!--
+  Base Humanoid Robot URDF for Digital Twin Chapter
+
+  Purpose: Educational example demonstrating:
+  - Multi-DOF kinematic tree (torso, arms, legs, head)
+  - Realistic inertial properties
+  - Simplified collision geometry (<1000 triangles per link)
+  - Physics-ready for Gazebo Classic 11.x
+
+  Coordinate System: X forward, Y left, Z up (REP-103 standard)
+  Units: meters (m), kilograms (kg), radians (rad)
+
+  Author: Physical AI Textbook - Chapter 2
+  Date: 2025-12-05
+-->
+<robot name="humanoid_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ============================================ -->
+  <!-- MATERIAL DEFINITIONS (for visualization)      -->
+  <!-- ============================================ -->
+
+  <material name="blue">
+    <color rgba="0.2 0.3 0.8 1.0"/>
+  </material>
+
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+  <material name="red">
+    <color rgba="0.8 0.2 0.2 1.0"/>
+  </material>
+
+  <material name="green">
+    <color rgba="0.2 0.8 0.2 1.0"/>
+  </material>
+
+  <!-- ============================================ -->
+  <!-- BASE LINK (Root of kinematic tree)            -->
+  <!-- ============================================ -->
+
+  <link name="base_link">
+    <!-- Placeholder for connection to world (e.g., via fixed joint for standing pose) -->
+    <!-- In real robot: this would be pelvis/hip center -->
+  </link>
+
+  <!-- ============================================ -->
+  <!-- TORSO (Main body, all other links connect here) -->
+  <!-- ============================================ -->
+
+  <link name="torso">
+    <visual>
+      <geometry>
+        <!-- Torso: 0.4m wide, 0.2m deep, 0.6m tall -->
+        <box size="0.4 0.2 0.6"/>
+      </geometry>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>  <!-- Center at half height -->
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <!-- Use same geometry for simplicity (box is already simple) -->
+      <geometry>
+        <box size="0.4 0.2 0.6"/>
+      </geometry>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <!-- Torso mass: 15 kg (typical for humanoid upper body) -->
+      <mass value="15.0"/>
+      <!-- Inertia for box: I = (1/12) * m * (h^2 + d^2) for each axis -->
+      <!-- ixx (rotation about X): (1/12) * 15 * (0.6^2 + 0.2^2) = 0.55 -->
+      <!-- iyy (rotation about Y): (1/12) * 15 * (0.6^2 + 0.4^2) = 0.65 -->
+      <!-- izz (rotation about Z): (1/12) * 15 * (0.4^2 + 0.2^2) = 0.30 -->
+      <inertia ixx="0.55" ixy="0.0" ixz="0.0"
+               iyy="0.65" iyz="0.0" izz="0.30"/>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>  <!-- Center of mass at torso center -->
+    </inertial>
+  </link>
+
+  <joint name="base_to_torso" type="fixed">
+    <!-- Fixed joint: torso is rigidly attached to base_link -->
+    <parent link="base_link"/>
+    <child link="torso"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================================ -->
+  <!-- HEAD (for sensor mounting)                    -->
+  <!-- ============================================ -->
+
+  <link name="head">
+    <visual>
+      <geometry>
+        <!-- Head: 0.15m diameter sphere -->
+        <sphere radius="0.15"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <sphere radius="0.15"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <!-- Head mass: 3 kg -->
+      <mass value="3.0"/>
+      <!-- Inertia for sphere: I = (2/5) * m * r^2 -->
+      <!-- I = (2/5) * 3.0 * 0.15^2 = 0.027 -->
+      <inertia ixx="0.027" ixy="0.0" ixz="0.0"
+               iyy="0.027" iyz="0.0" izz="0.027"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="neck_pitch" type="revolute">
+    <!-- Neck pitch: Look up/down -->
+    <parent link="torso"/>
+    <child link="head"/>
+    <origin xyz="0 0 0.7" rpy="0 0 0"/>  <!-- Head mounted 0.7m above base (top of torso + 0.1m) -->
+    <axis xyz="0 1 0"/>  <!-- Pitch axis (Y) -->
+    <limit lower="-0.785" upper="0.785" effort="10.0" velocity="1.0"/>  <!-- ±45° -->
+  </joint>
+
+  <!-- ============================================ -->
+  <!-- LEFT ARM                                      -->
+  <!-- ============================================ -->
+
+  <link name="left_shoulder">
+    <visual>
+      <geometry>
+        <!-- Shoulder joint: small sphere -->
+        <sphere radius="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+               iyy="0.001" iyz="0.0" izz="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_shoulder_pitch" type="revolute">
+    <!-- Shoulder pitch: Raise/lower arm -->
+    <parent link="torso"/>
+    <child link="left_shoulder"/>
+    <origin xyz="0 0.25 0.5" rpy="0 0 0"/>  <!-- Mounted on left side of torso -->
+    <axis xyz="0 1 0"/>  <!-- Pitch axis (Y) -->
+    <limit lower="-3.14" upper="3.14" effort="20.0" velocity="2.0"/>  <!-- ±180° full range -->
+  </joint>
+
+  <link name="left_upper_arm">
+    <visual>
+      <geometry>
+        <!-- Upper arm: 0.05m radius, 0.3m long cylinder -->
+        <cylinder radius="0.05" length="0.3"/>
+      </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>  <!-- Extend downward -->
+      <material name="green"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.3"/>
+      </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.5"/>
+      <!-- Inertia for cylinder along Z: I = (1/12) * m * (3*r^2 + h^2) -->
+      <inertia ixx="0.012" ixy="0.0" ixz="0.0"
+               iyy="0.012" iyz="0.0" izz="0.002"/>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_shoulder_roll" type="revolute">
+    <!-- Shoulder roll: Rotate arm inward/outward -->
+    <parent link="left_shoulder"/>
+    <child link="left_upper_arm"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>  <!-- Roll axis (X) -->
+    <limit lower="-1.57" upper="1.57" effort="15.0" velocity="1.5"/>  <!-- ±90° -->
+  </joint>
+
+  <link name="left_lower_arm">
+    <visual>
+      <geometry>
+        <!-- Lower arm (forearm): 0.04m radius, 0.25m long -->
+        <cylinder radius="0.04" length="0.25"/>
+      </geometry>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.25"/>
+      </geometry>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.006" ixy="0.0" ixz="0.0"
+               iyy="0.006" iyz="0.0" izz="0.001"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_elbow" type="revolute">
+    <!-- Elbow: Bend arm -->
+    <parent link="left_upper_arm"/>
+    <child link="left_lower_arm"/>
+    <origin xyz="0 0 -0.3" rpy="0 0 0"/>  <!-- Connect at end of upper arm -->
+    <axis xyz="0 1 0"/>  <!-- Pitch axis (Y) -->
+    <limit lower="0.0" upper="2.356" effort="10.0" velocity="1.5"/>  <!-- 0° to 135° (can't bend backward) -->
+  </joint>
+
+  <!-- ============================================ -->
+  <!-- RIGHT ARM (mirror of left arm)                -->
+  <!-- ============================================ -->
+
+  <link name="right_shoulder">
+    <visual>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+               iyy="0.001" iyz="0.0" izz="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_shoulder_pitch" type="revolute">
+    <parent link="torso"/>
+    <child link="right_shoulder"/>
+    <origin xyz="0 -0.25 0.5" rpy="0 0 0"/>  <!-- Right side (negative Y) -->
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="3.14" effort="20.0" velocity="2.0"/>
+  </joint>
+
+  <link name="right_upper_arm">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.3"/>
+      </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.3"/>
+      </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.012" ixy="0.0" ixz="0.0"
+               iyy="0.012" iyz="0.0" izz="0.002"/>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_shoulder_roll" type="revolute">
+    <parent link="right_shoulder"/>
+    <child link="right_upper_arm"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="15.0" velocity="1.5"/>
+  </joint>
+
+  <link name="right_lower_arm">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.25"/>
+      </geometry>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.25"/>
+      </geometry>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.006" ixy="0.0" ixz="0.0"
+               iyy="0.006" iyz="0.0" izz="0.001"/>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_elbow" type="revolute">
+    <parent link="right_upper_arm"/>
+    <child link="right_lower_arm"/>
+    <origin xyz="0 0 -0.3" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="2.356" effort="10.0" velocity="1.5"/>
+  </joint>
+
+  <!-- ============================================ -->
+  <!-- LEFT LEG                                      -->
+  <!-- ============================================ -->
+
+  <link name="left_hip">
+    <visual>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0"
+               iyy="0.002" iyz="0.0" izz="0.002"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_hip_pitch" type="revolute">
+    <parent link="base_link"/>
+    <child link="left_hip"/>
+    <origin xyz="0 0.1 0" rpy="0 0 0"/>  <!-- Hips are 0.1m apart -->
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="30.0" velocity="2.0"/>  <!-- ±90° -->
+  </joint>
+
+  <link name="left_thigh">
+    <visual>
+      <geometry>
+        <!-- Thigh: 0.06m radius, 0.4m long -->
+        <cylinder radius="0.06" length="0.4"/>
+      </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.06" length="0.4"/>
+      </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.045" ixy="0.0" ixz="0.0"
+               iyy="0.045" iyz="0.0" izz="0.005"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_hip_roll" type="revolute">
+    <parent link="left_hip"/>
+    <child link="left_thigh"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.785" upper="0.785" effort="25.0" velocity="1.5"/>  <!-- ±45° -->
+  </joint>
+
+  <link name="left_shin">
+    <visual>
+      <geometry>
+        <!-- Shin: 0.05m radius, 0.35m long -->
+        <cylinder radius="0.05" length="0.35"/>
+      </geometry>
+      <origin xyz="0 0 -0.175" rpy="0 0 0"/>
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.35"/>
+      </geometry>
+      <origin xyz="0 0 -0.175" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.022" ixy="0.0" ixz="0.0"
+               iyy="0.022" iyz="0.0" izz="0.003"/>
+      <origin xyz="0 0 -0.175" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_knee" type="revolute">
+    <parent link="left_thigh"/>
+    <child link="left_shin"/>
+    <origin xyz="0 0 -0.4" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.356" upper="0.0" effort="20.0" velocity="1.5"/>  <!-- 0° to -135° (knee bends backward) -->
+  </joint>
+
+  <link name="left_foot">
+    <visual>
+      <geometry>
+        <!-- Foot: 0.2m long, 0.1m wide, 0.05m tall -->
+        <box size="0.2 0.1 0.05"/>
+      </geometry>
+      <origin xyz="0.05 0 -0.025" rpy="0 0 0"/>  <!-- Foot extends forward -->
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.2 0.1 0.05"/>
+      </geometry>
+      <origin xyz="0.05 0 -0.025" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0"
+               iyy="0.004" iyz="0.0" izz="0.005"/>
+      <origin xyz="0.05 0 -0.025" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_ankle" type="revolute">
+    <parent link="left_shin"/>
+    <child link="left_foot"/>
+    <origin xyz="0 0 -0.35" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.785" upper="0.785" effort="15.0" velocity="1.0"/>  <!-- ±45° -->
+  </joint>
+
+  <!-- ============================================ -->
+  <!-- RIGHT LEG (mirror of left leg)                -->
+  <!-- ============================================ -->
+
+  <link name="right_hip">
+    <visual>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0"
+               iyy="0.002" iyz="0.0" izz="0.002"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_hip_pitch" type="revolute">
+    <parent link="base_link"/>
+    <child link="right_hip"/>
+    <origin xyz="0 -0.1 0" rpy="0 0 0"/>  <!-- Right side (negative Y) -->
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="30.0" velocity="2.0"/>
+  </joint>
+
+  <link name="right_thigh">
+    <visual>
+      <geometry>
+        <cylinder radius="0.06" length="0.4"/>
+      </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.06" length="0.4"/>
+      </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.045" ixy="0.0" ixz="0.0"
+               iyy="0.045" iyz="0.0" izz="0.005"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_hip_roll" type="revolute">
+    <parent link="right_hip"/>
+    <child link="right_thigh"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.785" upper="0.785" effort="25.0" velocity="1.5"/>
+  </joint>
+
+  <link name="right_shin">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.35"/>
+      </geometry>
+      <origin xyz="0 0 -0.175" rpy="0 0 0"/>
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.35"/>
+      </geometry>
+      <origin xyz="0 0 -0.175" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.022" ixy="0.0" ixz="0.0"
+               iyy="0.022" iyz="0.0" izz="0.003"/>
+      <origin xyz="0 0 -0.175" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_knee" type="revolute">
+    <parent link="right_thigh"/>
+    <child link="right_shin"/>
+    <origin xyz="0 0 -0.4" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.356" upper="0.0" effort="20.0" velocity="1.5"/>
+  </joint>
+
+  <link name="right_foot">
+    <visual>
+      <geometry>
+        <box size="0.2 0.1 0.05"/>
+      </geometry>
+      <origin xyz="0.05 0 -0.025" rpy="0 0 0"/>
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.2 0.1 0.05"/>
+      </geometry>
+      <origin xyz="0.05 0 -0.025" rpy="0 0 0"/>
+    </collision>
+
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0"
+               iyy="0.004" iyz="0.0" izz="0.005"/>
+      <origin xyz="0.05 0 -0.025" rpy="0 0 0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_ankle" type="revolute">
+    <parent link="right_shin"/>
+    <child link="right_foot"/>
+    <origin xyz="0 0 -0.35" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.785" upper="0.785" effort="15.0" velocity="1.0"/>
+  </joint>
+
+  <!-- ============================================ -->
+  <!-- GAZEBO PHYSICS PROPERTIES                     -->
+  <!-- ============================================ -->
+
+  <!-- Torso physics -->
+  <gazebo reference="torso">
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <!-- Foot physics (high friction for standing) -->
+  <gazebo reference="left_foot">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo reference="right_foot">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+</robot>
