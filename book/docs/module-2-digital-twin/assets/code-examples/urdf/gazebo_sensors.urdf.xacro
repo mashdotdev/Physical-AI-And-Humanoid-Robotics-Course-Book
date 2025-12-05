@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!--
+  Gazebo Sensor Definitions for Digital Twin Chapter
+
+  Includes: LiDAR 2D, Depth Camera, IMU
+
+  Author: Physical AI Textbook - Chapter 2
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- LiDAR 2D Sensor (mounted on head) -->
+  <gazebo reference="head">
+    <sensor name="lidar_sensor" type="ray">
+      <pose>0 0 0.2 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>30</update_rate>
+
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+
+      <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <namespace>/</namespace>
+          <argument>~/out:=scan</argument>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>head</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Depth Camera (RGB-D) -->
+  <gazebo reference="head">
+    <sensor name="depth_camera" type="depth">
+      <update_rate>30</update_rate>
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>10.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+
+      <plugin name="depth_camera_controller" filename="libgazebo_ros_camera.so">
+        <ros>
+          <namespace>/camera</namespace>
+          <argument>image_raw:=image_raw</argument>
+          <argument>depth/image_raw:=depth/image_raw</argument>
+          <argument>camera_info:=camera_info</argument>
+        </ros>
+        <camera_name>depth_camera</camera_name>
+        <frame_name>head</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU Sensor (mounted on torso) -->
+  <gazebo reference="torso">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.01</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.01</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.01</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.01</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.01</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.01</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+
+      <plugin name="imu_controller" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <namespace>/imu</namespace>
+          <argument>~/out:=data</argument>
+        </ros>
+        <frame_name>torso</frame_name>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
