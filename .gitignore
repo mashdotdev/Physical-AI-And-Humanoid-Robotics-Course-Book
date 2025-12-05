@@ -1,0 +1,36 @@
+# Gitignore for ROS 2 / Python / C++ project
+
+# General
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.tmp
+*.swp
+.env*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# C++
+build/
+bin/
+obj/
+out/
+*.o
+*.so
+*.a
+*.exe
+*.dll
+Makefile
+config.log
+
+# ROS 2 specific (assuming overlay workspace or similar)
+install/
+log/
+build/

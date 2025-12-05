@@ -208,3 +208,9 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Active Technologies
+- Python 3.10+, C++ (Secondary/Advanced), ROS 2 (Humble or Iron) on Ubuntu 22.04 LTS + ROS 2, NVIDIA Isaac Sim (Omniverse), Gazebo, Unity, NVIDIA Isaac ROS, Nav2, OpenAI Whisper, OpenAI GPT-4o / LLMs for Vision-Language-Action (VLA) (001-ros2-nervous-system)
+
+## Recent Changes
+- 001-ros2-nervous-system: Added Python 3.10+, C++ (Secondary/Advanced), ROS 2 (Humble or Iron) on Ubuntu 22.04 LTS + ROS 2, NVIDIA Isaac Sim (Omniverse), Gazebo, Unity, NVIDIA Isaac ROS, Nav2, OpenAI Whisper, OpenAI GPT-4o / LLMs for Vision-Language-Action (VLA)
