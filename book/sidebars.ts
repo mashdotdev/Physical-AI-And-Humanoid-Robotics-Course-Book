@@ -50,6 +50,18 @@ const sidebars: SidebarsConfig = {
         'module-3-ai-robot-brain/3.5-complete-pipeline',
       ],
     },
+    {
+      type: 'category',
+      label: 'Chapter 4: Vision-Language-Action',
+      items: [
+        'module-4-vla/4.1-overview',
+        'module-4-vla/4.2-voice-to-action-pipeline',
+        'module-4-vla/4.3-cognitive-planning',
+        'module-4-vla/4.4-computer-vision-integration',
+        'module-4-vla/4.5-navigation-manipulation',
+        'module-4-vla/4.6-capstone-project',
+      ],
+    },
   ],
 };
 
