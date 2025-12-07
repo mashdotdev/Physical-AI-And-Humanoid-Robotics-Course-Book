@@ -1,0 +1,223 @@
+openapi: 3.1.0
+info:
+  title: RAG Chatbot API
+  description: API for the Physical AI textbook RAG chatbot
+  version: 1.0.0
+  contact:
+    name: Physical AI Team
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.physicalai-book.com
+    description: Production server
+
+paths:
+  /api/chat:
+    post:
+      summary: Send a chat message
+      description: |
+        Processes a user question using RAG pipeline:
+        1. Embeds the question using Cohere
+        2. Retrieves relevant document chunks from Qdrant
+        3. Generates a response using OpenAI with context
+      operationId: chat
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              simple_question:
+                summary: Simple question
+                value:
+                  message: "What is ROS 2?"
+              with_conversation:
+                summary: Follow-up question
+                value:
+                  message: "How does it differ from ROS 1?"
+                  conversation_id: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              example:
+                response: "ROS 2 (Robot Operating System 2) is a middleware framework for building robot applications. It provides communication infrastructure, tools, and libraries for developing robotics software."
+                sources:
+                  - chapter: "Module 1: The Robotic Nervous System"
+                    section: "Understanding Robot Nervous System"
+                    file_path: "chapter1/understanding-robot-nervous-system.md"
+                    relevance: 0.89
+                conversation_id: "550e8400-e29b-41d4-a716-446655440000"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                empty_message:
+                  summary: Empty message
+                  value:
+                    error: "validation_error"
+                    message: "Message cannot be empty"
+                too_long:
+                  summary: Message too long
+                  value:
+                    error: "validation_error"
+                    message: "Message exceeds maximum length of 1000 characters"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "internal_error"
+                message: "An unexpected error occurred"
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "service_unavailable"
+                message: "RAG service is temporarily unavailable"
+
+  /api/health:
+    get:
+      summary: Health check
+      description: Returns the health status of the API
+      operationId: healthCheck
+      tags:
+        - System
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                version: "1.0.0"
+        '503':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "unhealthy"
+                version: "1.0.0"
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: The user's question
+          example: "What is a digital twin?"
+        conversation_id:
+          type: string
+          format: uuid
+          description: Optional session identifier for conversation continuity
+          example: "550e8400-e29b-41d4-a716-446655440000"
+
+    ChatResponse:
+      type: object
+      required:
+        - response
+        - sources
+        - conversation_id
+      properties:
+        response:
+          type: string
+          description: The generated answer
+          example: "A digital twin is a virtual representation of a physical robot..."
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+          description: References to source documents used
+        conversation_id:
+          type: string
+          format: uuid
+          description: Session identifier for follow-up questions
+
+    Source:
+      type: object
+      required:
+        - chapter
+        - section
+        - file_path
+        - relevance
+      properties:
+        chapter:
+          type: string
+          description: Chapter name
+          example: "Module 2: The Digital Twin"
+        section:
+          type: string
+          description: Section heading
+          example: "Physics Simulation"
+        file_path:
+          type: string
+          description: Path to source document
+          example: "module-2-digital-twin/gazebo-physics.md"
+        relevance:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Similarity score
+          example: 0.85
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - version
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          description: Service health status
+        version:
+          type: string
+          description: API version
+          example: "1.0.0"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "validation_error"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Message cannot be empty"
+
+tags:
+  - name: Chat
+    description: Chat operations
+  - name: System
+    description: System health and status
