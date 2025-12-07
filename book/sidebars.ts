@@ -39,6 +39,17 @@ const sidebars: SidebarsConfig = {
         'module-2-digital-twin/exercises',
       ],
     },
+    {
+      type: 'category',
+      label: 'Chapter 3: The AI-Robot Brain',
+      items: [
+        'module-3-ai-robot-brain/3.1-ai-brain-fundamentals',
+        'module-3-ai-robot-brain/3.2-isaac-sim-synthetic-data',
+        'module-3-ai-robot-brain/3.3-isaac-ros-vslam',
+        'module-3-ai-robot-brain/3.4-nav2-humanoid-planning',
+        'module-3-ai-robot-brain/3.5-complete-pipeline',
+      ],
+    },
   ],
 };
 
