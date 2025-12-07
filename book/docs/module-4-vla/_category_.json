@@ -1,0 +1,8 @@
+{
+  "label": "Module 4: Vision-Language-Action",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn to build the cognitive layer of a humanoid robot, enabling it to understand and respond to natural language commands."
+  }
+}

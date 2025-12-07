@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 
 # Consolidated prerequisite checking script
