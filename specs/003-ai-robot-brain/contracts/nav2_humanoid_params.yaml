@@ -1,0 +1,266 @@
+# Nav2 Parameters for Humanoid Robot
+# Contract Template for Section 3.4
+#
+# Purpose: Configure Nav2 stack with humanoid-specific constraints
+# Requirements: FR-023 (Nav2 parameter configuration for humanoid constraints)
+# Success Criteria: SC-006 (prevent step width violations), SC-007 (behavior tree execution)
+
+# Global configuration
+use_sim_time: true
+
+# Behavior Tree Navigator
+bt_navigator:
+  ros__parameters:
+    use_sim_time: true
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    bt_loop_duration: 10          # milliseconds
+    default_server_timeout: 20    # seconds
+    enable_groot_monitoring: true  # BT visualization
+    groot_zmq_publisher_port: 1666
+    groot_zmq_server_port: 1667
+    # Behavior tree XML file
+    default_nav_to_pose_bt_xml: "$(find-pkg-share nav2_bt_navigator)/behavior_trees/navigate_to_pose_w_replanning_and_recovery.xml"
+    plugin_lib_names:
+      - nav2_compute_path_to_pose_action_bt_node
+      - nav2_follow_path_action_bt_node
+      - nav2_spin_action_bt_node
+      - nav2_wait_action_bt_node
+      - nav2_back_up_action_bt_node
+      - nav2_clear_costmap_service_bt_node
+      - nav2_is_stuck_condition_bt_node
+      - nav2_goal_reached_condition_bt_node
+      - nav2_distance_traveled_condition_bt_node
+
+# Controller Server (DWB for humanoid constraints)
+controller_server:
+  ros__parameters:
+    use_sim_time: true
+    controller_frequency: 20.0    # Hz - velocity command rate
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.001
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3        # meters - path following tolerance
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugins: ["humanoid_goal_checker"]
+    controller_plugins: ["FollowPath"]
+
+    # Progress checker (ensures robot is moving)
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.5    # meters
+      movement_time_allowance: 10.0    # seconds
+
+    # Goal checker (humanoid-specific tolerances)
+    humanoid_goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.15          # meters - tighter than differential drive
+      yaw_goal_tolerance: 0.2          # radians (~11 degrees)
+      stateful: true
+
+    # DWB Local Planner (humanoid velocity constraints)
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      debug_trajectory_details: false
+      min_vel_x: 0.1                   # m/s - minimum forward (stability)
+      min_vel_y: 0.0                   # No lateral motion (bipedal constraint)
+      max_vel_x: 0.5                   # m/s - conservative forward speed
+      max_vel_y: 0.0
+      max_vel_theta: 0.8               # rad/s - turn rate
+      min_speed_xy: 0.1                # m/s - minimum speed threshold
+      max_speed_xy: 0.5                # m/s - maximum speed
+      min_speed_theta: 0.1             # rad/s
+      # Acceleration limits (critical for balance)
+      acc_lim_x: 0.3                   # m/s² - gentle acceleration
+      acc_lim_y: 0.0
+      acc_lim_theta: 1.0               # rad/s²
+      decel_lim_x: -0.3                # m/s² - gentle deceleration
+      decel_lim_y: 0.0
+      decel_lim_theta: -1.0            # rad/s²
+      # Trajectory sampling
+      vx_samples: 20
+      vy_samples: 0                    # No lateral motion
+      vtheta_samples: 20
+      sim_time: 1.5                    # seconds - trajectory lookahead
+      linear_granularity: 0.05         # meters - path resolution
+      angular_granularity: 0.025       # radians
+      transform_tolerance: 0.2         # seconds - TF buffer
+      xy_goal_tolerance: 0.15
+      trans_stopped_velocity: 0.05
+      short_circuit_trajectory_evaluation: true
+      stateful: true
+      # Critics (cost function components)
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      BaseObstacle.scale: 0.02
+      PathAlign.scale: 32.0
+      PathAlign.forward_point_distance: 0.1
+      GoalAlign.scale: 24.0
+      GoalAlign.forward_point_distance: 0.1
+      PathDist.scale: 32.0
+      GoalDist.scale: 24.0
+      RotateToGoal.scale: 32.0
+      RotateToGoal.slowing_factor: 5.0
+      RotateToGoal.lookahead_time: -1.0
+
+# Planner Server (global path planning)
+planner_server:
+  ros__parameters:
+    use_sim_time: true
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5                   # meters - goal tolerance for global plan
+      use_astar: false                 # Dijkstra (smoother paths)
+      allow_unknown: true              # Allow planning through unknown space
+
+# Costmap Settings - Global Costmap
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: true
+      update_frequency: 1.0            # Hz - global map updates slowly
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_link
+      robot_radius: 0.25               # meters - humanoid footprint radius
+      resolution: 0.05                 # meters/cell (5cm cells)
+      track_unknown_space: true
+      plugins: ["static_layer", "inflation_layer"]
+      # Static layer (from VSLAM map)
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: true
+        enabled: true
+        subscribe_to_updates: true
+        transform_tolerance: 0.5
+      # Inflation layer (humanoid-specific)
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 5.0       # Steep cost gradient (balance safety)
+        inflation_radius: 0.5          # meters - larger margin for balance
+        inflate_unknown: false
+        inflate_around_unknown: false
+      always_send_full_costmap: true
+
+# Costmap Settings - Local Costmap
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      update_frequency: 5.0            # Hz - local map updates frequently
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: base_link
+      robot_radius: 0.25               # meters
+      resolution: 0.05                 # meters/cell
+      width: 5                         # meters - local window size
+      height: 5
+      rolling_window: true             # Follow robot
+      plugins: ["voxel_layer", "inflation_layer"]
+      # Voxel layer (3D obstacle detection from depth camera)
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: true
+        publish_voxel_map: true
+        origin_z: 0.0
+        z_resolution: 0.05             # meters - vertical resolution
+        z_voxels: 16                   # 0.8m height
+        max_obstacle_height: 2.0       # meters
+        min_obstacle_height: 0.1       # meters (ignore ground plane)
+        mark_threshold: 2              # Voxels to mark as obstacle
+        observation_sources: camera_depth
+        camera_depth:
+          topic: /camera/depth/points  # PointCloud2 from depth camera
+          sensor_frame: camera_depth_link
+          observation_persistence: 0.0 # seconds - don't persist (dynamic)
+          expected_update_rate: 30.0   # Hz
+          data_type: "PointCloud2"
+          min_obstacle_height: 0.1
+          max_obstacle_height: 2.0
+          obstacle_max_range: 3.0      # meters - depth camera range
+          obstacle_min_range: 0.3      # meters - min valid depth
+          raytrace_max_range: 3.5      # meters - clearing range
+          raytrace_min_range: 0.0
+          clearing: true
+          marking: true
+      # Inflation layer (tighter for local planning)
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 5.0
+        inflation_radius: 0.4          # meters - slightly smaller for reactive control
+        inflate_unknown: false
+      always_send_full_costmap: true
+
+# Recovery Behaviors
+recoveries_server:
+  ros__parameters:
+    use_sim_time: true
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0              # Hz
+    recovery_plugins: ["spin", "backup", "wait"]
+    # Spin recovery (humanoid-specific: slower, shorter)
+    spin:
+      plugin: "nav2_recoveries::Spin"
+      simulate_ahead_time: 2.0         # seconds
+      max_rotational_vel: 0.5          # rad/s - slow spin for balance
+      min_rotational_vel: 0.2
+      rotational_acc_lim: 1.0          # rad/s²
+    # Backup recovery (very conservative for humanoids)
+    backup:
+      plugin: "nav2_recoveries::BackUp"
+      simulate_ahead_time: 2.0
+      backup_speed: 0.1                # m/s - very slow backward motion
+      backup_time: 3.0                 # seconds - limited backup duration
+    # Wait recovery (stabilization pause)
+    wait:
+      plugin: "nav2_recoveries::Wait"
+      wait_duration: 2.0               # seconds - balance recovery time
+    global_frame: odom
+    robot_base_frame: base_link
+    transform_timeout: 0.1
+    simulate_ahead_time: 2.0
+    max_rotational_vel: 0.5
+    min_rotational_vel: 0.2
+    rotational_acc_lim: 1.0
+
+# Waypoint Follower
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: true
+    loop_rate: 20                      # Hz
+    stop_on_failure: false
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: true
+      waypoint_pause_duration: 5       # seconds - pause at each waypoint
+
+# Velocity Smoother (critical for humanoid balance)
+velocity_smoother:
+  ros__parameters:
+    use_sim_time: true
+    smoothing_frequency: 20.0          # Hz
+    scale_velocities: false
+    feedback: "OPEN_LOOP"
+    max_velocity: [0.5, 0.0, 0.8]      # [x, y, theta] - match controller limits
+    min_velocity: [-0.1, 0.0, -0.8]
+    max_accel: [0.3, 0.0, 1.0]         # [x, y, theta] - gentle acceleration
+    max_decel: [-0.3, 0.0, -1.0]
+    odom_topic: "/odom"
+    odom_duration: 0.1                 # seconds - odometry buffer
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0              # seconds - stop if no commands
+
+# Contract Validation Checklist:
+# [ ] Robot radius matches URDF footprint (0.25m)
+# [ ] Velocity limits respect humanoid balance constraints (max 0.5 m/s forward)
+# [ ] Acceleration limits are gentle (<0.3 m/s²)
+# [ ] Inflation radius provides balance margin (0.5m global, 0.4m local)
+# [ ] No lateral motion (min/max_vel_y = 0.0)
+# [ ] Recovery behaviors are conservative (slow spin, limited backup)
+# [ ] Costmap resolution supports step width planning (0.05m = 5cm)
+# [ ] Depth camera configured for 3D obstacle detection
+# [ ] Goal tolerances tighter than differential drive (0.15m vs 0.25m typical)
+# [ ] Velocity smoother prevents sudden acceleration changes
