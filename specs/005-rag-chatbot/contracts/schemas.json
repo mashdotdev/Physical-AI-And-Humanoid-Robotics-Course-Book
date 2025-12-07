@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ChatRequest": {
+      "type": "object",
+      "required": ["message"],
+      "properties": {
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "The user's question"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Optional session identifier for conversation continuity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChatResponse": {
+      "type": "object",
+      "required": ["response", "sources", "conversation_id"],
+      "properties": {
+        "response": {
+          "type": "string",
+          "description": "The generated answer"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Source"
+          },
+          "description": "References to source documents used"
+        },
+        "conversation_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Session identifier for follow-up questions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Source": {
+      "type": "object",
+      "required": ["chapter", "section", "file_path", "relevance"],
+      "properties": {
+        "chapter": {
+          "type": "string",
+          "description": "Chapter name"
+        },
+        "section": {
+          "type": "string",
+          "description": "Section heading"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "Path to source document"
+        },
+        "relevance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Similarity score"
+        }
+      },
+      "additionalProperties": false
+    },
+    "HealthResponse": {
+      "type": "object",
+      "required": ["status", "version"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["healthy", "unhealthy"],
+          "description": "Service health status"
+        },
+        "version": {
+          "type": "string",
+          "description": "API version"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "required": ["error", "message"],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "Error code"
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable error message"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DocumentChunk": {
+      "type": "object",
+      "required": ["id", "text", "embedding", "metadata"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the chunk"
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "The actual text content"
+        },
+        "embedding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1024,
+          "maxItems": 1024,
+          "description": "Cohere embedding vector"
+        },
+        "metadata": {
+          "$ref": "#/definitions/ChunkMetadata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChunkMetadata": {
+      "type": "object",
+      "required": ["file_path", "chapter", "section", "position"],
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "pattern": ".*\\.md$",
+          "description": "Relative path from book/docs/"
+        },
+        "chapter": {
+          "type": "string",
+          "description": "Chapter name"
+        },
+        "section": {
+          "type": "string",
+          "description": "Section heading"
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Chunk position within the document"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Message": {
+      "type": "object",
+      "required": ["role", "content", "timestamp"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant"],
+          "description": "Message sender role"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Message text"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Source"
+          },
+          "description": "Referenced sources (assistant only)"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When message was created"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Conversation": {
+      "type": "object",
+      "required": ["id", "messages", "created_at"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Session identifier"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Message"
+          },
+          "maxItems": 50,
+          "description": "Ordered list of messages"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Session start time"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
