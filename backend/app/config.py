@@ -20,7 +20,9 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-2.5-flash"
 
     # CORS
-    cors_origins: str = "http://localhost:3000,http://localhost:3001,https://physical-ai-and-humanoid-robotics-c-lemon.vercel.app/"
+    cors_origins: str = (
+        "http://localhost:3000,http://localhost:3001,https://vercel.com/mashhood-husssains-projects/physical-ai-and-humanoid-robotics-course-book"
+    )
 
     # RAG Settings
     embedding_model: str = "embed-english-v3.0"
@@ -37,7 +39,9 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> list[str]:
         """Parse CORS origins from comma-separated string."""
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+        return [
+            origin.strip() for origin in self.cors_origins.split(",") if origin.strip()
+        ]
 
 
 @lru_cache

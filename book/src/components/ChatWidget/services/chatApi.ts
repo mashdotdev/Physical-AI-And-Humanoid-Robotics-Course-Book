@@ -2,11 +2,12 @@
  * API client service for the chat backend
  */
 
-import type { ChatRequest, ChatResponse, Source } from '../types';
+import type { ChatRequest, ChatResponse, Source } from "../types";
 
 // API URL - configure this for your deployment
 // For production, update this to your deployed backend URL
-const API_URL = 'http://localhost:8000';
+const API_URL =
+  "https://backend-qqfwan470-mashhood-husssains-projects.vercel.app/";
 
 /**
  * Send a message to the chat API and get a response
@@ -21,16 +22,18 @@ export async function sendMessage(
   };
 
   const response = await fetch(`${API_URL}/api/chat`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(request),
   });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+    throw new Error(
+      errorData.message || `Request failed with status ${response.status}`
+    );
   }
 
   const data = await response.json();
