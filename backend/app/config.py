@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # CORS
     cors_origins: str = (
-        "http://localhost:3000,http://localhost:3001,https://vercel.com/mashhood-husssains-projects/physical-ai-and-humanoid-robotics-course-book"
+        "http://localhost:3000,http://localhost:3001,https://physical-ai-and-humanoid-robotics-c-seven.vercel.app"
     )
 
     # RAG Settings
