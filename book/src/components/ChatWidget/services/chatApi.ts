@@ -6,8 +6,7 @@ import type { ChatRequest, ChatResponse, Source } from "../types";
 
 // API URL - configure this for your deployment
 // For production, update this to your deployed backend URL
-const API_URL =
-  "https://backend-agajj7ozk-mashhood-husssains-projects.vercel.app/";
+const API_URL = "https://physical-ai-and-humanoid-robotics-c-iota.vercel.app";
 
 /**
  * Send a message to the chat API and get a response
