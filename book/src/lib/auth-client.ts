@@ -3,11 +3,19 @@
  */
 import { createAuthClient } from "better-auth/react";
 
-// Auth service URL - defaults to localhost for development
-// In production, set window.__AUTH_URL__ before loading the app
-const AUTH_URL = typeof window !== "undefined" && (window as any).__AUTH_URL__
-  ? (window as any).__AUTH_URL__
-  : "http://localhost:3001";
+// Auth service URL - auto-detect production vs development
+const getAuthUrl = () => {
+  if (typeof window === "undefined") return "http://localhost:3001";
+  if ((window as any).__AUTH_URL__) return (window as any).__AUTH_URL__;
+  // Production detection
+  if (window.location.hostname.includes("vercel.app") ||
+      window.location.hostname.includes("physical-ai-and-humanoid-robotics")) {
+    return "https://auth-sandy-delta.vercel.app";
+  }
+  return "http://localhost:3001";
+};
+
+const AUTH_URL = getAuthUrl();
 
 /**
  * Better Auth client instance
