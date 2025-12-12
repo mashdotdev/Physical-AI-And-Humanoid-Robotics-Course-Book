@@ -1,0 +1,24 @@
+# Virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Tests
+tests/
+test_*.py
+
+# Development files
+.git/
+.gitignore
+.env.local
+*.md
+Dockerfile
+scripts/
+
+# IDE
+.vscode/
+.idea/
+
+# Vercel
+.vercel/
