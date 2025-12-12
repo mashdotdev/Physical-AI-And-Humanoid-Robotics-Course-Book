@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 # Better Auth session cookie names (varies by environment)
 SESSION_COOKIE_NAMES = [
-    "_Secure-better-auth_token",      # Production with secure cookies
+    "__Secure-better-auth_token",      # Production with secure cookies
     "better-auth.session_token",       # Development / legacy
     "better-auth_token",               # Alternative format
 ]
