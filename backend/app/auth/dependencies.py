@@ -8,8 +8,12 @@ from app.models.auth import CurrentUser
 
 logger = logging.getLogger(__name__)
 
-# Better Auth session cookie name
-SESSION_COOKIE_NAME = "better-auth.session_token"
+# Better Auth session cookie names (varies by environment)
+SESSION_COOKIE_NAMES = [
+    "_Secure-better-auth_token",      # Production with secure cookies
+    "better-auth.session_token",       # Development / legacy
+    "better-auth_token",               # Alternative format
+]
 
 
 async def get_current_user(request: Request) -> CurrentUser:
@@ -26,14 +30,13 @@ async def get_current_user(request: Request) -> CurrentUser:
     all_cookies = dict(request.cookies)
     logger.info(f"[Auth Debug] All cookies received: {list(all_cookies.keys())}")
 
-    # Get session token from cookie
-    session_token = request.cookies.get(SESSION_COOKIE_NAME)
-
-    # Also try without the dot prefix (some versions use different names)
-    if not session_token:
-        session_token = request.cookies.get("better-auth_session_token")
-    if not session_token:
-        session_token = request.cookies.get("session_token")
+    # Get session token from cookie - try multiple possible names
+    session_token = None
+    for cookie_name in SESSION_COOKIE_NAMES:
+        session_token = request.cookies.get(cookie_name)
+        if session_token:
+            logger.info(f"[Auth Debug] Found session token in cookie: {cookie_name}")
+            break
 
     if not session_token:
         logger.warning(f"No session token found. Available cookies: {list(all_cookies.keys())}")
