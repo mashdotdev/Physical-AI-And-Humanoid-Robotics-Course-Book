@@ -68,20 +68,34 @@ async def get_current_user(request: Request) -> CurrentUser:
         )
 
         if not row:
-            # Debug: Check what's in the session table
+            # Debug: Check if session exists but is expired
             debug_row = await pool.fetchrow(
-                """SELECT id, token, "expiresAt" FROM session ORDER BY "createdAt" DESC LIMIT 1"""
+                """SELECT id, token, "expiresAt", "expiresAt" > NOW() as is_valid FROM session WHERE token = $1""",
+                session_token,
             )
-            db_token_preview = debug_row["token"][:20] if debug_row else "NO SESSIONS"
-            cookie_token_preview = session_token[:20] if session_token else "NONE"
-            logger.warning(f"Session mismatch. Cookie: {cookie_token_preview}... DB: {db_token_preview}...")
-            raise HTTPException(
-                status_code=401,
-                detail={
-                    "error": "session_expired",
-                    "message": f"Session not found. Cookie token: {cookie_token_preview}..., DB token: {db_token_preview}..."
-                },
-            )
+            if debug_row:
+                expires = debug_row["expiresAt"]
+                is_valid = debug_row["is_valid"]
+                raise HTTPException(
+                    status_code=401,
+                    detail={
+                        "error": "session_expired",
+                        "message": f"Session found but expired. expiresAt: {expires}, is_valid: {is_valid}"
+                    },
+                )
+            else:
+                # Token not found at all - check latest session
+                latest = await pool.fetchrow(
+                    """SELECT token FROM session ORDER BY "createdAt" DESC LIMIT 1"""
+                )
+                db_token = latest["token"] if latest else "NO SESSIONS"
+                raise HTTPException(
+                    status_code=401,
+                    detail={
+                        "error": "session_expired",
+                        "message": f"Token not in DB. Cookie: {session_token[:30]}..., Latest DB: {db_token[:30] if latest else 'NONE'}..."
+                    },
+                )
 
         # Return authenticated user context
         return CurrentUser(
