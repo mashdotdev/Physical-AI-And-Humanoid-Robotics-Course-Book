@@ -1,0 +1,460 @@
+/* Auth component styles */
+
+/* Sign In Button */
+.signInButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #3c4043;
+  background-color: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.signInButton:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #d2d5da;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.signInButton:active:not(:disabled) {
+  background-color: #f1f3f4;
+}
+
+.signInButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signInButton.fullWidth {
+  width: 100%;
+}
+
+.googleIcon {
+  flex-shrink: 0;
+}
+
+.loading {
+  color: #5f6368;
+}
+
+/* Auth Gate */
+.authGate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 300px;
+  background: linear-gradient(to bottom, #f8f9fa, #fff);
+  border-radius: 12px;
+}
+
+.authGateContent {
+  max-width: 280px;
+}
+
+.authGateIcon {
+  color: var(--ifm-color-primary);
+  margin-bottom: 1rem;
+}
+
+.authGateTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.authGateMessage {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: #5f6368;
+  line-height: 1.5;
+}
+
+/* Auth Loading */
+.authLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+  min-height: 200px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e8eaed;
+  border-top-color: var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: #5f6368;
+  font-size: 0.9rem;
+}
+
+/* Auth Error */
+.authError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 250px;
+}
+
+.authErrorIcon {
+  color: #ea4335;
+  margin-bottom: 1rem;
+}
+
+.authErrorTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.authErrorMessage {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: #5f6368;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.retryButton {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ifm-color-primary);
+  background-color: transparent;
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.retryButton:hover {
+  background-color: var(--ifm-color-primary);
+  color: #fff;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .signInButton {
+  color: #e8eaed;
+  background-color: #3c4043;
+  border-color: #5f6368;
+}
+
+[data-theme='dark'] .signInButton:hover:not(:disabled) {
+  background-color: #4a4d51;
+  border-color: #6e7175;
+}
+
+[data-theme='dark'] .authGate {
+  background: linear-gradient(to bottom, #2d2d2d, #1e1e1e);
+}
+
+[data-theme='dark'] .authGateTitle,
+[data-theme='dark'] .authErrorTitle {
+  color: #e8eaed;
+}
+
+[data-theme='dark'] .authGateMessage,
+[data-theme='dark'] .authErrorMessage,
+[data-theme='dark'] .loadingText,
+[data-theme='dark'] .loading {
+  color: #9aa0a6;
+}
+
+[data-theme='dark'] .spinner {
+  border-color: #5f6368;
+  border-top-color: var(--ifm-color-primary);
+}
+
+/* Sign Out Button */
+.signOutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #5f6368;
+  background-color: transparent;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.signOutButton:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  color: #202124;
+}
+
+.signOutButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.textButton {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: inherit;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.textButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ea4335;
+  background-color: transparent;
+  border: 1px solid #ea4335;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background-color: #ea4335;
+  color: #fff;
+}
+
+/* User Menu */
+.userMenu {
+  position: relative;
+}
+
+.userMenuTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: box-shadow 0.2s ease;
+}
+
+.userMenuTrigger:hover {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.userAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.userInitials {
+  text-transform: uppercase;
+}
+
+.userMenuDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.userMenuHeader {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.userName {
+  display: block;
+  font-weight: 500;
+  color: #202124;
+  margin-bottom: 0.125rem;
+}
+
+.userEmail {
+  display: block;
+  font-size: 0.8rem;
+  color: #5f6368;
+}
+
+.userMenuDivider {
+  height: 1px;
+  background-color: #e8eaed;
+  margin: 0;
+}
+
+.userMenuItem {
+  padding: 0;
+}
+
+/* Dark mode for sign out and user menu */
+[data-theme='dark'] .signOutButton {
+  color: #9aa0a6;
+  border-color: #5f6368;
+}
+
+[data-theme='dark'] .signOutButton:hover:not(:disabled) {
+  background-color: #3c4043;
+  color: #e8eaed;
+}
+
+[data-theme='dark'] .textButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .userMenuTrigger:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .userMenuDropdown {
+  background: #2d2d2d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .userMenuHeader {
+  border-bottom-color: #3c4043;
+}
+
+[data-theme='dark'] .userName {
+  color: #e8eaed;
+}
+
+[data-theme='dark'] .userEmail {
+  color: #9aa0a6;
+}
+
+[data-theme='dark'] .userMenuDivider {
+  background-color: #3c4043;
+}
+
+/* Avatar size variations */
+.avatarSmall {
+  width: 24px;
+  height: 24px;
+  font-size: 0.625rem;
+}
+
+.avatarLarge {
+  width: 48px;
+  height: 48px;
+  font-size: 1rem;
+}
+
+.avatarSmall,
+.avatarLarge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 0;
+}
+
+.avatarSmall img,
+.avatarLarge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* User Profile */
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.userProfileCompact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.userProfileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.userProfileName {
+  font-weight: 500;
+  color: #202124;
+  font-size: 0.875rem;
+}
+
+.userProfileEmail {
+  font-size: 0.75rem;
+  color: #5f6368;
+}
+
+[data-theme='dark'] .userProfileName {
+  color: #e8eaed;
+}
+
+[data-theme='dark'] .userProfileEmail {
+  color: #9aa0a6;
+}

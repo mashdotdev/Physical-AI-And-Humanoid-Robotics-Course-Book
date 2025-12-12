@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = "*"
 
+    # Database (Neon PostgreSQL for Better Auth session validation)
+    database_url: str = ""
+
 
     # RAG Settings
     embedding_model: str = "embed-english-v3.0"

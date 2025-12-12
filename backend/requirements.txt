@@ -7,3 +7,6 @@ python-dotenv>=1.0.0
 pydantic>=2.6.0
 pydantic-settings>=2.1.0
 httpx>=0.26.0
+# Auth dependencies (Better Auth session validation)
+asyncpg>=0.29.0
+python-jose[cryptography]>=3.3.0

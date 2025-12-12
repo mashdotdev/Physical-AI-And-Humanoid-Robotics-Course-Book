@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  title: FastAPI Backend - Auth Integration
+  description: |
+    Authentication middleware for the FastAPI chat backend.
+    Validates sessions from Better Auth via shared Neon database.
+  version: 1.0.0
+  contact:
+    name: Physical AI Book Team
+
+servers:
+  - url: https://api.example.com
+    description: Production API
+  - url: http://localhost:8000
+    description: Local development
+
+paths:
+  /api/chat:
+    post:
+      summary: Send chat message (authenticated)
+      description: |
+        Send a message to the RAG chatbot.
+        Requires valid session cookie from Better Auth.
+      operationId: sendChatMessage
+      tags:
+        - Chat
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/health:
+    get:
+      summary: Health check
+      description: Returns service health status (no auth required)
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  database:
+                    type: string
+                    example: connected
+
+  /api/me:
+    get:
+      summary: Get current user
+      description: Returns authenticated user info from session
+      operationId: getCurrentUser
+      tags:
+        - User
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: better-auth.session_token
+      description: |
+        Session token cookie set by Better Auth service.
+        Cookie domain: .example.com (shared across subdomains)
+
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: User message to chatbot
+          minLength: 1
+          maxLength: 4000
+          example: What is ROS 2?
+        conversation_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optional conversation ID for context
+
+    ChatResponse:
+      type: object
+      required:
+        - response
+      properties:
+        response:
+          type: string
+          description: Chatbot response
+        conversation_id:
+          type: string
+          format: uuid
+          description: Conversation ID for follow-up
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/Source"
+          description: Retrieved document sources
+
+    Source:
+      type: object
+      properties:
+        chapter:
+          type: string
+          description: Source chapter
+        section:
+          type: string
+          description: Source section
+        filePath:
+          type: string
+          description: File path in documentation
+        relevance:
+          type: number
+          format: float
+          description: Relevance score (0-1)
+
+    CurrentUser:
+      type: object
+      required:
+        - id
+        - name
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        name:
+          type: string
+          description: Display name
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: Email address
+        image:
+          type: string
+          format: uri
+          nullable: true
+          description: Profile image URL
+        session_id:
+          type: string
+          format: uuid
+          description: Current session ID
+
+    AuthError:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: Not authenticated
+        code:
+          type: string
+          description: Error code
+          enum:
+            - NOT_AUTHENTICATED
+            - SESSION_EXPIRED
+            - INVALID_TOKEN
+
+    Error:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+
+tags:
+  - name: Chat
+    description: RAG chatbot operations
+  - name: User
+    description: User profile operations
+  - name: Health
+    description: Service health checks
+
+# Auth Middleware Implementation Notes
+x-middleware-spec:
+  description: |
+    FastAPI auth middleware validates sessions by querying Neon directly.
+
+    Flow:
+    1. Extract `better-auth.session_token` from cookies
+    2. Query session table in Neon database
+    3. Verify session not expired (expiresAt > NOW())
+    4. Join with user table to get user info
+    5. Return CurrentUser or raise 401
+
+  python-implementation: |
+    from fastapi import Depends, HTTPException, Request
+
+    async def get_current_user(request: Request) -> CurrentUser:
+        token = request.cookies.get("better-auth.session_token")
+        if not token:
+            raise HTTPException(
+                status_code=401,
+                detail="Not authenticated",
+                headers={"WWW-Authenticate": "Cookie"}
+            )
+
+        session = await db.fetchrow(
+            '''
+            SELECT u.id, u.name, u.email, u.image, s.id as session_id
+            FROM session s
+            JOIN "user" u ON s."userId" = u.id
+            WHERE s.token = $1 AND s."expiresAt" > NOW()
+            ''',
+            token
+        )
+
+        if not session:
+            raise HTTPException(
+                status_code=401,
+                detail="Session expired or invalid"
+            )
+
+        return CurrentUser(**dict(session))
