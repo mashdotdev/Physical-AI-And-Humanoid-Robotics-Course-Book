@@ -36,6 +36,10 @@ async def get_current_user(request: Request) -> CurrentUser:
         session_token = request.cookies.get(cookie_name)
         if session_token:
             logger.info(f"[Auth Debug] Found session token in cookie: {cookie_name}")
+            # Better Auth cookie format is "token.signature" - we only need the token part
+            if "." in session_token:
+                session_token = session_token.split(".")[0]
+                logger.info(f"[Auth Debug] Extracted token part: {session_token[:20]}...")
             break
 
     if not session_token:
