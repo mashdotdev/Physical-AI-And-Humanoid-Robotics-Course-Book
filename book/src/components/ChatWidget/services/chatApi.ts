@@ -4,9 +4,19 @@
 
 import type { ChatRequest, ChatResponse, Source } from "../types";
 
-// API URL - configure this for your deployment
-// For production, update this to your deployed backend URL
-const API_URL = "https://physical-ai-and-humanoid-robotics-c-iota.vercel.app";
+// API URL - use local origin in production (proxied via vercel.json)
+const getApiUrl = () => {
+  if (typeof window === "undefined") return "";
+  // In production, use the current origin (proxied to backend)
+  if (window.location.hostname.includes("vercel.app") ||
+      window.location.hostname.includes("physical-ai")) {
+    return window.location.origin;
+  }
+  // Local development - point to local backend
+  return "http://localhost:8000";
+};
+
+const API_URL = getApiUrl();
 
 /**
  * Custom error class for authentication errors
