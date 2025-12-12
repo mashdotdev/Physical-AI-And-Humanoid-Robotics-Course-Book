@@ -1,9 +1,11 @@
 """Chat API endpoint."""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from uuid import uuid4
 
 from app.models import ChatRequest, ChatResponse, ErrorResponse
+from app.models.auth import CurrentUser
+from app.auth.dependencies import get_current_user
 from app.rag import RAGChain
 
 router = APIRouter()
@@ -14,19 +16,26 @@ router = APIRouter()
     response_model=ChatResponse,
     responses={
         400: {"model": ErrorResponse},
+        401: {"model": ErrorResponse},
         500: {"model": ErrorResponse},
         503: {"model": ErrorResponse},
     },
 )
-async def chat(request: ChatRequest) -> ChatResponse:
+async def chat(
+    request: ChatRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+) -> ChatResponse:
     """
     Process a chat message and return a RAG-generated response.
 
+    Requires authentication - the user must be signed in via Google OAuth.
+
     The endpoint:
-    1. Embeds the user's question
-    2. Retrieves relevant document chunks from the vector store
-    3. Generates a response using the LLM with the retrieved context
-    4. Returns the response with source references
+    1. Validates the user's session (via get_current_user dependency)
+    2. Embeds the user's question
+    3. Retrieves relevant document chunks from the vector store
+    4. Generates a response using the LLM with the retrieved context
+    5. Returns the response with source references
     """
     try:
         # Initialize RAG chain

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ChatBubble from './ChatBubble';
 import ChatPanel from './ChatPanel';
 import { useChat } from './hooks/useChat';
+import { AuthGate } from '../Auth/AuthGate';
 import styles from './styles.module.css';
 
 /**
@@ -9,7 +10,9 @@ import styles from './styles.module.css';
  *
  * Renders either:
  * - A floating bubble button (when minimized)
- * - A full chat panel (when expanded)
+ * - A full chat panel with auth gate (when expanded)
+ *
+ * The chat panel requires authentication before users can send messages.
  */
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,13 +30,17 @@ export default function ChatWidget() {
   return (
     <div className={styles.container}>
       {isOpen ? (
-        <ChatPanel
-          messages={messages}
-          isLoading={isLoading}
-          error={error}
-          onSend={sendMessage}
-          onClose={handleClose}
-        />
+        <div className={styles.panelWrapper}>
+          <AuthGate signInMessage="Sign in to chat with the AI assistant">
+            <ChatPanel
+              messages={messages}
+              isLoading={isLoading}
+              error={error}
+              onSend={sendMessage}
+              onClose={handleClose}
+            />
+          </AuthGate>
+        </div>
       ) : (
         <ChatBubble onClick={handleOpen} />
       )}

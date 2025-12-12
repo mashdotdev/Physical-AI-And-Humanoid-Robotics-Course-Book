@@ -1,0 +1,267 @@
+openapi: 3.0.3
+info:
+  title: Better Auth Service API
+  description: |
+    Authentication service powered by Better Auth.
+    Handles Google OAuth flow, session management, and user operations.
+  version: 1.0.0
+  contact:
+    name: Physical AI Book Team
+
+servers:
+  - url: https://auth.example.com
+    description: Production auth service
+  - url: http://localhost:3000
+    description: Local development
+
+paths:
+  /api/auth/sign-in/social:
+    post:
+      summary: Initiate social sign-in
+      description: Redirects user to Google OAuth consent screen
+      operationId: signInSocial
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - provider
+              properties:
+                provider:
+                  type: string
+                  enum: [google]
+                  description: OAuth provider
+                callbackURL:
+                  type: string
+                  format: uri
+                  description: URL to redirect after OAuth completion
+      responses:
+        "302":
+          description: Redirect to Google OAuth
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+        "400":
+          description: Invalid provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/auth/callback/google:
+    get:
+      summary: Google OAuth callback
+      description: |
+        Handles Google OAuth callback, creates user/session, sets cookie.
+        This endpoint is called by Google after user authorization.
+      operationId: googleCallback
+      tags:
+        - Authentication
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: OAuth authorization code
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+          description: CSRF protection state
+      responses:
+        "302":
+          description: Redirect to callbackURL with session cookie set
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie (better-auth.session_token)
+        "400":
+          description: Invalid callback parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/auth/session:
+    get:
+      summary: Get current session
+      description: Returns current user session if authenticated
+      operationId: getSession
+      tags:
+        - Session
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Session data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/auth/sign-out:
+    post:
+      summary: Sign out
+      description: Terminates current session and clears cookie
+      operationId: signOut
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Successfully signed out
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Cleared session cookie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: better-auth.session_token
+      description: Session token cookie set by Better Auth
+
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique user identifier
+        name:
+          type: string
+          description: Display name from Google
+          example: John Doe
+        email:
+          type: string
+          format: email
+          description: Email address from Google
+          example: john@example.com
+        emailVerified:
+          type: boolean
+          description: Whether email is verified
+          default: false
+        image:
+          type: string
+          format: uri
+          nullable: true
+          description: Profile image URL from Google
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    Session:
+      type: object
+      required:
+        - id
+        - userId
+        - expiresAt
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Session identifier
+        userId:
+          type: string
+          format: uuid
+          description: Associated user ID
+        expiresAt:
+          type: string
+          format: date-time
+          description: Session expiration time
+        ipAddress:
+          type: string
+          nullable: true
+          description: Client IP address
+        userAgent:
+          type: string
+          nullable: true
+          description: Client user agent
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SessionResponse:
+      type: object
+      required:
+        - user
+        - session
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        session:
+          $ref: "#/components/schemas/Session"
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: Not authenticated
+        code:
+          type: string
+          description: Error code
+          example: UNAUTHORIZED
+
+tags:
+  - name: Authentication
+    description: OAuth sign-in and sign-out operations
+  - name: Session
+    description: Session management operations

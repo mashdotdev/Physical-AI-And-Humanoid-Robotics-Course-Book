@@ -9,7 +9,18 @@ import type { ChatRequest, ChatResponse, Source } from "../types";
 const API_URL = "https://physical-ai-and-humanoid-robotics-c-iota.vercel.app";
 
 /**
+ * Custom error class for authentication errors
+ */
+export class AuthenticationError extends Error {
+  constructor(message: string = "Authentication required") {
+    super(message);
+    this.name = "AuthenticationError";
+  }
+}
+
+/**
  * Send a message to the chat API and get a response
+ * Requires authentication - includes credentials for cookie-based auth
  */
 export async function sendMessage(
   message: string,
@@ -25,13 +36,23 @@ export async function sendMessage(
     headers: {
       "Content-Type": "application/json",
     },
+    // Include credentials (cookies) for authentication
+    credentials: "include",
     body: JSON.stringify(request),
   });
+
+  // Handle 401 Unauthorized - authentication required
+  if (response.status === 401) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new AuthenticationError(
+      errorData.detail?.message || "Session expired. Please sign in again."
+    );
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(
-      errorData.message || `Request failed with status ${response.status}`
+      errorData.message || errorData.detail?.message || `Request failed with status ${response.status}`
     );
   }
 

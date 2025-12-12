@@ -1,8 +1,15 @@
 import { useState, useCallback } from 'react';
 import type { Message, ChatState } from '../types';
-import { sendMessage as sendMessageApi } from '../services/chatApi';
+import { sendMessage as sendMessageApi, AuthenticationError } from '../services/chatApi';
 
 const STORAGE_KEY = 'chat_conversation';
+
+/**
+ * Extended chat state with auth error flag
+ */
+interface ExtendedChatState extends ChatState {
+  authError: boolean;
+}
 
 /**
  * Load conversation from sessionStorage
@@ -42,15 +49,17 @@ function saveConversation(messages: Message[], conversationId: string | null) {
 
 /**
  * Hook for managing chat state and sending messages
+ * Handles authentication errors and triggers re-auth when needed
  */
 export function useChat() {
-  const [state, setState] = useState<ChatState>(() => {
+  const [state, setState] = useState<ExtendedChatState>(() => {
     const { messages, conversationId } = loadConversation();
     return {
       messages,
       isLoading: false,
       error: null,
       conversationId,
+      authError: false,
     };
   });
 
@@ -67,6 +76,7 @@ export function useChat() {
       messages: [...prev.messages, userMessage],
       isLoading: true,
       error: null,
+      authError: false,
     }));
 
     try {
@@ -96,18 +106,29 @@ export function useChat() {
         };
       });
     } catch (error) {
+      // Check if this is an authentication error
+      const isAuthError = error instanceof AuthenticationError;
       const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
 
       setState((prev) => ({
         ...prev,
         isLoading: false,
         error: errorMessage,
+        authError: isAuthError,
       }));
+
+      // If auth error, remove the pending user message
+      if (isAuthError) {
+        setState((prev) => ({
+          ...prev,
+          messages: prev.messages.slice(0, -1), // Remove last message (the failed one)
+        }));
+      }
     }
   }, [state.conversationId]);
 
   const clearError = useCallback(() => {
-    setState((prev) => ({ ...prev, error: null }));
+    setState((prev) => ({ ...prev, error: null, authError: false }));
   }, []);
 
   const clearConversation = useCallback(() => {
@@ -117,6 +138,7 @@ export function useChat() {
       isLoading: false,
       error: null,
       conversationId: null,
+      authError: false,
     });
   }, []);
 
@@ -124,6 +146,7 @@ export function useChat() {
     messages: state.messages,
     isLoading: state.isLoading,
     error: state.error,
+    authError: state.authError,
     conversationId: state.conversationId,
     sendMessage,
     clearError,
