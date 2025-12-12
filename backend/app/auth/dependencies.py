@@ -68,10 +68,19 @@ async def get_current_user(request: Request) -> CurrentUser:
         )
 
         if not row:
-            logger.debug("Session not found or expired")
+            # Debug: Check what's in the session table
+            debug_row = await pool.fetchrow(
+                """SELECT id, token, "expiresAt" FROM session ORDER BY "createdAt" DESC LIMIT 1"""
+            )
+            db_token_preview = debug_row["token"][:20] if debug_row else "NO SESSIONS"
+            cookie_token_preview = session_token[:20] if session_token else "NONE"
+            logger.warning(f"Session mismatch. Cookie: {cookie_token_preview}... DB: {db_token_preview}...")
             raise HTTPException(
                 status_code=401,
-                detail={"error": "session_expired", "message": "Session expired"},
+                detail={
+                    "error": "session_expired",
+                    "message": f"Session not found. Cookie token: {cookie_token_preview}..., DB token: {db_token_preview}..."
+                },
             )
 
         # Return authenticated user context
