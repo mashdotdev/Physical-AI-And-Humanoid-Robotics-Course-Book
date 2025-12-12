@@ -89,11 +89,17 @@ async def get_current_user(request: Request) -> CurrentUser:
                     """SELECT token FROM session ORDER BY "createdAt" DESC LIMIT 1"""
                 )
                 db_token = latest["token"] if latest else "NO SESSIONS"
+                # Show full tokens and lengths for comparison
                 raise HTTPException(
                     status_code=401,
                     detail={
                         "error": "session_expired",
-                        "message": f"Token not in DB. Cookie: {session_token[:30]}..., Latest DB: {db_token[:30] if latest else 'NONE'}..."
+                        "message": "Token not in DB",
+                        "cookie_token": session_token,
+                        "cookie_len": len(session_token),
+                        "db_token": db_token,
+                        "db_len": len(db_token) if latest else 0,
+                        "match": session_token == db_token,
                     },
                 )
 
