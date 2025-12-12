@@ -22,14 +22,24 @@ async def get_current_user(request: Request) -> CurrentUser:
     Raises:
         HTTPException: 401 if not authenticated or session expired
     """
+    # Debug: Log all cookies received
+    all_cookies = dict(request.cookies)
+    logger.info(f"[Auth Debug] All cookies received: {list(all_cookies.keys())}")
+
     # Get session token from cookie
     session_token = request.cookies.get(SESSION_COOKIE_NAME)
 
+    # Also try without the dot prefix (some versions use different names)
     if not session_token:
-        logger.debug("No session token found in cookies")
+        session_token = request.cookies.get("better-auth_session_token")
+    if not session_token:
+        session_token = request.cookies.get("session_token")
+
+    if not session_token:
+        logger.warning(f"No session token found. Available cookies: {list(all_cookies.keys())}")
         raise HTTPException(
             status_code=401,
-            detail={"error": "not_authenticated", "message": "Not authenticated"},
+            detail={"error": "not_authenticated", "message": f"Not authenticated. Cookies received: {list(all_cookies.keys())}"},
         )
 
     try:
