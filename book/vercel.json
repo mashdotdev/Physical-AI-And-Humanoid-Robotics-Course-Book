@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/auth/:path*",
+      "destination": "https://auth-sandy-delta.vercel.app/api/auth/:path*"
+    }
+  ]
+}
